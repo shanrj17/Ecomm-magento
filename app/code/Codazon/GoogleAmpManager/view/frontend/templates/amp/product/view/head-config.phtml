@@ -1,0 +1,12 @@
+<?php
+/**
+* Copyright © 2020 Codazon. All rights reserved.
+* See COPYING.txt for license details.
+*/
+?>
+<?php
+$product = $block->getProduct();
+?>
+<?php if ($block->getProduct()) : ?>
+<script type="application/ld+json"><?= $this->helper(\Codazon\GoogleAmpManager\Helper\Data::class)->getProuductViewConfigJson($product); ?></script>
+<?php endif ?>

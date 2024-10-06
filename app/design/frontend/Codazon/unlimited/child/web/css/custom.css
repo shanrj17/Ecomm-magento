@@ -1,0 +1,20 @@
+@charset "UTF-8";
+.page-header.ezsewingcraft_header .header-panel-center{
+    padding: 0;
+    margin-top: 9px;
+}
+.page-header.ezsewingcraft_header .sticky-menu:not(.active) .header-middle .header-panel-right {
+    padding: 0;
+    margin-top: 9px;
+}
+.page-header.ezsewingcraft_header .sticky-menu:not(.active) .header-middle .header {
+    padding: 25px 0;
+}
+.page-header.ezsewingcraft_header .groupmenu li.item.header_submenu_heading {
+    color: #f28b00;
+    font-size: 12px;
+    font-weight: 600;
+}
+.page-header.ezsewingcraft_header  .cdz-horizontal-menu .groupmenu li.level0:hover>a.menu-link {
+    font-weight: normal;
+}

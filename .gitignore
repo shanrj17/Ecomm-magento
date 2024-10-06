@@ -1,0 +1,77 @@
+# Ignore generated and build directories
+/generated/
+/pub/static/
+/var/
+/pub/media/
+
+# Ignore sensitive configuration files
+/app/etc/env.php
+/app/etc/config.php
+
+# Composer-related files
+/vendor/
+/composer.lock
+
+# Ignore specific files and folders within app/ and other key directories
+/app/code/*/view/frontend/web/css/source/*.map
+/app/code/*/view/adminhtml/web/css/source/*.map
+
+# Ignore node modules
+/node_modules/
+/grunt/node_modules/
+/phpserver/node_modules/
+/lib/web/css/docs/
+/lib/internal/flex/dir
+
+# Ignore testing-related files
+/.phpunit.result.cache
+/test/
+/dev/tests/unit/
+/dev/tests/integration/
+/dev/tests/functional/
+/dev/tests/static/
+
+# IDE-specific files (JetBrains, VSCode, NetBeans, etc.)
+/.idea/
+/.vscode/
+/nbproject/
+
+# OS and environment-specific files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs and temp files
+*.log
+*.tmp
+*.ts
+*.swp
+
+# Magento cache and session files
+/var/cache/
+/var/session/
+/var/page_cache/
+/var/tmp/
+/var/log/
+/var/report/
+
+# Magento setup and upgrade directories
+/setup/
+/var/di/
+
+# Ignore static content deployment (can be rebuilt)
+/pub/static/frontend/
+/pub/static/adminhtml/
+/pub/static/_cache/
+/pub/static/_requirejs/
+
+# Ignore minified JS, CSS, and other assets (auto-generated)
+/pub/static/**/*.min.js
+/pub/static/**/*.min.css
+/pub/static/**/*.min.map
+
+# Custom files to ignore (add any custom exclusions below)
+/pub
+/dev
+/phpserver

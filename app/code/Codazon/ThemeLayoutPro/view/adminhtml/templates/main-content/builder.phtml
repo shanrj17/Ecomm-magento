@@ -1,0 +1,200 @@
+<?php
+/**
+ * Copyright © 2017 Codazon. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+
+<?php
+$attributeCode = 'themelayout_content';
+$isUseDefault = $this->isUseDefault($attributeCode);
+?>
+<div class="main-content-builder custom-bootstrap" data-role="page-builder">
+    <div class="cdz-toolbar page-main-actions">
+        <button class="cdz-btn action-default primary" type="button" role="copy_json"><span><?= __('Copy current JSON') ?></span></button>
+        <div class="cdz-dd-wrap" role="dropdown">
+            <div class="dd-backface" role="dd_close"></div>
+            <button class="cdz-btn cdz-dd-trigger action-default secondary" type="button" role="dd_toggle"><span><?= __('Buid tree from JSON') ?></span></button>
+            <textarea class="cdz-clipboard" role="clipboard" id="cdz-clipboard"></textarea>
+            <div class="cdz-dd" role="dd_content">
+                <textarea class="tree-json" role="tree_json" placeholder="<?= __('Paste builder JSON here.') ?>"></textarea>
+                <div class="cdz-dd-actions">
+                    <button class="action-default primary" type="button" role="build_tree"><span><?= __('Replace') ?></span></button>
+                    <button class="action-default secondary" type="button" role="build_tree" data-way="add" data-pos="before"><span><?= __('Add Before') ?></span></button>
+                    <button class="action-default secondary" type="button" role="build_tree" data-way="add" data-pos="after"><span><?= __('Add After') ?>
+                    <button class="action-default secondary" type="button" role="dd_close"><span><?= __('Cancel') ?></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5 col-left">
+            <div class="block-title"><?= __('Element Set') ?></div>
+            <div class="element-type-area" data-role="ele-area">
+                <?php if($this->displayUseDefault($attributeCode)) : ?>
+                <div class="admin__field-control">
+                    <div class="admin__field-service">
+                        <input type="checkbox" <?php if ($isUseDefault) : ?>checked<?php endif ?> id="themelayout_content_default" name="use_default[themelayout_content]" class="admin__control-checkbox" onclick="toggleThemeContent(this)" />
+                        <label for="themelayout_content_default" class="admin__field-label">
+                            <span class="use-default-label"><?= __('Use Default Content') ?></span>
+                        </label>
+                    </div>
+                </div>
+                <?php endif ?>
+            </div>
+        </div>
+        <div class="col-sm-19 col-right">
+            <div class="block-title"><?= __('Main Area') ?></div>
+            <div class="page-main-area" data-role="main-area"></div>
+        </div>
+    </div>
+</div>
+
+<?= $this->getChildHtml('element_templates'); ?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$version = str_replace("-dev", "", (string)$objectManager->get(\Magento\Framework\App\ProductMetadataInterface::class)->getVersion());
+$isMage23 = version_compare($version, '2.3.0', '>=');
+$isMage244 = $isMage23 && version_compare($version, '2.4.4', '>=');
+?>
+<?php if ((!$isMage244) && $isMage23) : ?>
+<script>
+require.config({
+    map: {
+        '*': {
+            tinymce: 'tiny_mce_4/tinymce.min'
+        }
+    }
+});
+</script>
+<?php endif ?>
+<script type="text/javascript">
+/* Editor Tool Config */
+var Codazon = {
+    editorUrl:      '<?= $this->getUrl('themelayoutpro/wysiwyg/index') ?>',
+    imageUrl:       '<?= $this->getUrl('cms/wysiwyg_images/index') ?>',
+    templateUrl:    '<?= $this->getUrl('themelayoutpro/ajax/templates') ?>',
+    mediaUrl:       '<?= $this->getMediaUrl() ?>'
+}
+require.config({
+    map: {
+        '*': {
+            contentBuilder: 'Codazon_ThemeLayoutPro/js/content-builder',
+			jqueryTmpl: 'Codazon_ThemeLayoutPro/js/jquery.tmpl.min',
+			contentBuilderJqueryUi: 'Codazon_ThemeLayoutPro/js/jquery-ui.min'
+        }
+    },
+    shim:{
+		'Codazon_ThemeLayoutPro/js/content-builder': ['jqueryTmpl', 'contentBuilderJqueryUi'],
+		'Codazon_ThemeLayoutPro/js/jquery.tmpl.min': ['jquery'],
+		'jquery/jquery-uiCodazon_ThemeLayoutPro/js/jquery-ui.min': ['jquery/jquery-ui']
+	}
+});
+require(['jquery'], function($) {    
+    require(['jquery/ui', 'Codazon_ThemeLayoutPro/js/editor', 'jquery/jquery-ui-timepicker-addon', 'Codazon_ThemeLayoutPro/js/browser'], function(ui) {
+        /* remove default jquery ui of magento */
+        $.ui.sortable = undefined;
+        $.ui.droppable = undefined;
+        $.ui.draggable = undefined;
+        $.extend($.ui,{plugin:{add:function(n,e,i){var r,t=$.ui[n].prototype;for(r in i)t.plugins[r]=t.plugins[r]||[],t.plugins[r].push([e,i[r]])},call:function(n,e,i){var r,t=n.plugins[e];if(t&&n.element[0].parentNode&&11!==n.element[0].parentNode.nodeType)for(r=0;r<t.length;r++)n.options[t[r][0]]&&t[r][1].apply(n.element,i)}},contains:$.contains,hasScroll:function(n,e){if("hidden"===$(n).css("overflow"))return!1;var i=e&&"left"===e?"scrollLeft":"scrollTop",r=!1;return n[i]>0?!0:(n[i]=1,r=n[i]>0,n[i]=0,r)},isOverAxis:function(n,e,i){return n>e&&e+i>n},isOver:function(n,e,i,r,t,o){return $.ui.isOverAxis(n,i,t)&&$.ui.isOverAxis(e,r,o)}});
+        window.toggleThemeContent = function(object) {
+            var $themeContentParent = $(object).parents('[data-role=page-builder]').first().find('.col-right').first();
+            var themeContentParent = $themeContentParent.get(0);
+            toggleValueElements(object, themeContentParent);
+            if (object.checked) {
+                $themeContentParent.addClass('_disabled');
+                $('#themelayout_content_default_hidden').val('1').trigger('change');
+            } else {
+                $themeContentParent.removeClass('_disabled');
+                $('#themelayout_content_default_hidden').val('0').trigger('change');
+            }
+        }
+        require(['contentBuilderJqueryUi', 'jqueryTmpl', 'contentBuilder'], function() {
+            var $pageBuilder = $('[data-role=page-builder]').first(), $useDefaultCheckbox = $('#themelayout_content_default'), itemData = [];
+            function setupPageBuilder() {
+                if ($('.form-inline input[name=themelayout_content]').length) {
+                    var contentValue = $('.form-inline input[name=themelayout_content]').val();
+                    if (contentValue) {
+                        itemData = JSON.parse(contentValue);
+                    }
+                    $pageBuilder.pagebuilder({
+                        itemTypes: <?= json_encode($this->getItemTypes()) ?>,
+                        itemData: itemData,
+                        imagePlaceholder: '<?= $this->getImageUrl('placeholder.jpg') ?>',
+                        mediaUrl: '<?= $this->getMediaUrl() ?>'
+                    });
+                    var builder = $pageBuilder.data('codazonPagebuilder'),
+                    $themcontentInput = $('.form-inline input[name=themelayout_content]').first(),
+                    $requiredCss = $('.form-inline input[name=required_less_component]').first();
+                    if ($useDefaultCheckbox.length) {
+                        var $useDefaultHidden = $('<input type="hidden" id="themelayout_content_default_hidden" value="<?php echo $isUseDefault?'1':'0' ?>" name="use_default[themelayout_content]" data-form-part="themelayout_maincontent_form">');
+                        $useDefaultHidden.insertAfter($themcontentInput).trigger('change');
+                    }
+                    $('body').on('processStart', (e) => {
+                        if ($useDefaultCheckbox.length && $useDefaultCheckbox.get(0).checked) {
+                            $themcontentInput.val('').trigger('change');
+                        } else {
+                            var elementJson = builder.elementHTMLtoJson(), requireCSS = builder.collectRequiredCss();
+                            $requiredCss.val(JSON.stringify(requireCSS)).trigger('change');
+                            $themcontentInput.val(JSON.stringify(elementJson)).trigger('change');
+                        }
+                    });
+                    if ($useDefaultCheckbox.length) {
+                        var checkbox = $useDefaultCheckbox.get(0);
+                        if (checkbox.checked) {
+                            toggleThemeContent(checkbox);
+                        }
+                    }
+                    $pageBuilder.on('click', '[role=copy_json]', () => {
+                        let treeJson = builder.elementHTMLtoJson();
+                        $('#cdz-clipboard').val(JSON.stringify(treeJson)).focus().select();
+                        let copy = document.execCommand('copy');
+                        alert("<?= __('The builder JSON was copied to clipboard.') ?>");
+                    }).on('click', '[role=build_tree]', function() {
+                        let add = ($(this).data('way') == 'add'), before = ($(this).data('pos') == 'before'),
+                        cf = add ? true : confirm("Are you sure? All current elements will be replaced.");
+                        if (cf) {
+                            let $js = $('[role=tree_json]', $pageBuilder), js = $js.val(), loader = $('body').data('mageLoader');
+                            if (js) {
+                                try {
+                                    js = JSON.parse(js);
+                                    if (add) {
+                                        if (js) {
+                                            builder.addElementsFromJson(js, before);
+                                            $js.val('').parents('[role=dropdown]').removeClass('active');
+                                        }
+                                    } else {
+                                        loader.show();
+                                        if (js) builder.buidTreeFromJson(js);
+                                        setTimeout(() => {
+                                            $js.val('').parents('[role=dropdown]').removeClass('active');
+                                            loader.hide();
+                                            setTimeout(() => alert("<?= __("New content was built completely.") ?>"), 100);
+                                        }, js.length * 100);
+                                    }
+                                } catch (e) {
+                                    alert("<?= __('Invalid JSON') ?>");
+                                    $js.val('').parents('[role=dropdown]').removeClass('active');
+                                    loader.hide();
+                                    console.log(e);
+                                }
+                            } else {
+                                alert("<?= __('JSON is empty') ?>");
+                            }
+                        }
+                    }).on('click', '[role=dd_toggle]', function() {
+                        $(this).parents('[role=dropdown]').first().toggleClass('active');
+                    }).on('click', '[role=dd_close]', function() {
+                        $(this).parents('[role=dropdown]').first().removeClass('active');
+                    });
+                } else {
+                    setTimeout(function() {
+                        setupPageBuilder();
+                    }, 50);
+                }
+            }
+            setupPageBuilder();
+        });
+    });
+});
+</script>

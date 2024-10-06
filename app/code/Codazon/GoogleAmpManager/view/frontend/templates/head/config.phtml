@@ -1,0 +1,15 @@
+<?php
+/**
+* Copyright © 2019 Codazon. All rights reserved.
+* See COPYING.txt for license details.
+*/
+?>
+<script <?= $this->helper(\Codazon\Core\Helper\Data::class)->generateNonce() ?>>
+require(['jquery', 'mage/cookies'], function($) {
+    if ($.mage.cookies.get('mage-messages')) {
+        require(['Magento_Customer/js/customer-data'], function(customerData) {
+            customerData.reload(['cart'], true);
+        });
+    }
+});
+</script>

@@ -1,0 +1,86 @@
+<?php
+/**
+ * Copyright © 2024 Codazon, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+?>
+<?php
+$slides = [];
+if (count($children)) {
+    foreach ($children as $child) {
+        if ($child['type'] === 'slideshow_slide') {
+            $slides[] = $child;
+        }
+    }
+}
+?>
+<?php if (count($slides)) : ?>
+<?php
+$width = (int)$settings['width'] ? : 1900;
+$height = (int)$settings['height'] ? : 900;
+$aspectRatio = $width / $height;
+$slideConfig = json_decode(str_replace(['"0"','"1"'],['0','1'],$settings['slider_config']), true);
+$slideConfig['stagePadding'] = (int)$slideConfig['stagePadding'];
+$slideConfig['margin'] = (int)$slideConfig['margin'];
+$widget = [
+    'Codazon_ThemeLayoutPro/js/flex-slideshow' => [
+        'items' => 1,
+        'sliderConfig' => $slideConfig
+    ]
+];
+$strVal = [ $this->jsonToCssVariablesString($settings['variables']) ];
+$strVal[] = $this->jsonToCssVariablesString($settings['responsive']);
+$strVal[] = "--items-gap:". (int)$slideConfig['margin'].'px;--stage-pd:'.(int)$slideConfig['stagePadding'].'px';
+$imgeHelper = $this->helper('Codazon\Core\Helper\Image');
+$mediaUrl = $block->getMediaUrl();
+?>
+<div class="sls-cont <?= $settings['class'] ?> <?= $settings['custom_style'] ?> <?= $settings['dots_style'] ?> <?= $settings['dots_pos'] ?>" style="--sls-ratio: <?= $aspectRatio ?>; --sls-pdb: <?= 100/$aspectRatio ?>%;<?= implode(';', $strVal) ?>;<?= $settings['style'] ?>" data-mage-init='<?= json_encode($widget) ?>'>
+    <div class="sls-inner cdz-grid-base">
+    <?php foreach ($slides as $slide) : ?>
+    <?php
+        $slideConfig = $slide['settings'];
+    ?>
+    <div class="i-slide cdz-item"<?= $this->jsonToCssVariablesString($slideConfig['variables'], true) ?>>
+        <?php if ($slideConfig['image']) : ?>
+        <div class="sl-img">
+            <?php
+                if ($slideConfig['image_mobi']) {
+                    $mobiImage = $slideConfig['image_mobi'];
+                } else {
+                    $tempImage = str_replace($mediaUrl, '', $this->filter($slideConfig['image'])); 
+                    $mobiImage = (string)$imgeHelper->init($tempImage)->keepFrame(false)->resize(767, null);
+                }
+            ?>
+            <img class="visible-xs" src="<?= $mobiImage ?>" loading="lazy" alt="<?= $slideConfig['title'] ?>" />
+            <img class="hidden-xs" src="<?= $slideConfig['image'] ?>" loading="lazy" alt="<?= $slideConfig['title'] ?>" srcset="<?= $mobiImage ?> 767w, <?= $slideConfig['image'].' '.$width ?>w" sizes=(max-width: 767px) 767px, <?= $width ?>px" />
+        </div>
+        <?php endif ?>
+        <?php if (!empty($slide['children'])) : ?>
+        <div class="sl-content">
+            <?php foreach ($slide['children'] as $element) : ?>
+                <?php
+                    $elConfig = $element['settings'];
+                    $strVal = $this->jsonToCssVariablesString($elConfig['variables'], true);
+                ?>
+                <?php if ($element['type'] === 'slide_element_text') : ?>
+                <div class="sl-ele sle-txt <?= $elConfig['class'] ?> pos-x-<?= $elConfig['pos_x'] ?> pos-y-<?= $elConfig['pos_y'] ?>"<?= $strVal ?>><div class="el-pos"><?= $elConfig['text'] ?></div></div>
+                <?php elseif ($element['type'] === 'slide_element_image') : ?>
+                <div class="sl-ele sle-img <?= $elConfig['class'] ?> pos-x-<?= $elConfig['pos_x'] ?> pos-y-<?= $elConfig['pos_y'] ?>"<?= $strVal ?>><div class="el-pos">
+                    <?php if (trim($elConfig['svg'])) : ?>
+                    <?= $elConfig['svg'] ?>
+                    <?php else : ?>
+                    <img src="<?= $elConfig['image'] ?>" alt="" />
+                    <?php endif ?>
+                </div></div>
+                <?php endif ?>
+            <?php endforeach ?>
+        </div>
+        <?php endif ?>
+        <?php if ($slideConfig['url']) : ?>
+        <a href="<?= $slideConfig['url'] ?>" class="abs-fullbox"></a>
+        <?php endif ?>
+    </div>
+    <?php endforeach ?>
+    </div>
+</div>
+<?php endif ?>

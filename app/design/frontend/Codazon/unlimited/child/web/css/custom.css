@@ -26,9 +26,6 @@
 .homepage-brand-scroller .shop-by-brand-slider.owl-carousel.owl-drag .owl-item {
     border: 1px solid #eeeeee;
 }
-.our-business-section .banner-style12 .item-content {
-    border: 1px solid #eeeeee;
-}
 .about-more-two-seaction .industrial-text.leftside {
     background: #e5fbfd;
     border: 1px solid #fff;
@@ -95,4 +92,34 @@
     letter-spacing: 0;
     margin-top: 10px;
     display: block;
+}
+
+.our-business-section .banner-style12 {
+    background: none;
+}
+
+.our-business-section .banner-style12 .bc-title{
+    color: #ffffff;
+}
+.our-business-section .banner-style12 .bc-desc {
+    color: #fff;
+}
+@media only screen and (min-width: 768px) {
+    .page-header.ezsewingcraft_header .cdz-navigation .cdz-horizontal-menu .groupmenu{
+        text-align: center;
+    }
+    .page-header.ezsewingcraft_header .cdz-horizontal-menu .groupmenu li.item.level0 {
+        float: none !important;
+    }
+    .page-header.ezsewingcraft_header .cdz-navigation .cdz-horizontal-menu .groupmenu .groupmenu-drop.slidedown{
+        text-align: left;
+    }
+    .page-header.ezsewingcraft_header .sticky-menu:not(.active) .header-top {
+        background: #d3b83f;
+        border-bottom: 1px solid #d3b83f;
+        padding: 5px 0px;
+    }
+    .page-header.ezsewingcraft_header .sticky-menu:not(.active) .header-top a{
+        color: #ffffff !important;
+    }
 }
